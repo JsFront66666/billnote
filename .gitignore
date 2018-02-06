@@ -26,3 +26,7 @@ yarn-error.log*
 
 # data
 localdb/**
+!localdb/.gitkeep
+
+package-lock.json
+yarn.lock
