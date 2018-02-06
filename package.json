@@ -1,0 +1,23 @@
+{
+  "name": "billnote",
+  "version": "1.0.0",
+  "description": "A light weight web app that record expense of family using React, SQLite3, Express",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  },
+  "scripts": {
+    "sqlite3-setup":"node ./server/init-db-sqlite3.js",
+    "sqlite3-setup-back": "sqlite3 ./localdb/bill.sqlite3 --init ./server/sql/schema-sqlite3.sql",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node ./server/server.js",
+    "client": "node ./client/start-client.js"
+  },
+  "keywords": [],
+  "author": "Jscssux",
+  "license": "MIT"
+}

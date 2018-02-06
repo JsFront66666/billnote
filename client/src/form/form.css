@@ -1,0 +1,10 @@
+html, body{box-sizing: border-box;font-size: 16px;}
+*{box-sizing: inherit;}
+.form{width:100%;max-width:300px;margin: 0 auto;}
+.form-field{margin: 10px 0;}
+label{display: block;}
+input:not([type="radio"]), input:not([type="checkbox"]), select, textarea{width: 100%;padding: 3px;border: 1px solid #999999;font-size: 16px;}
+select{-webkit-appearance: none;}
+.form-submit-btn{padding: 10px 20px;background: #333333;color: #ffffff;border: none;font-size: 16px;}
+
+
