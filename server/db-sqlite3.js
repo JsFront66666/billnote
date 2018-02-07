@@ -64,14 +64,17 @@ exports.read = function(key) {
         });
     });
 };
-exports.readConfig = function(key) {
+exports.readConfig = function(table,key) {
     return exports.connectDB().then(() => {
         return new Promise((resolve, reject) => {
-            db.all(`SELECT rowid AS id, name FROM ${key}`,
-                 (err, rows) => {
+            var querySQL=`SELECT rowid AS id, name FROM ${table}`;
+            if(key==="relation"){
+                querySQL=`SELECT rowid AS id, parentcategorytype, categorytype, name FROM ${table}`;
+            }
+            db.all(querySQL, (err, rows) => {
                 if (err){ reject(err);}
                 else {
-                    const namestr=`${key}List`;
+                    const namestr=`${table}List`;
                     const list={};
                     list[namestr] = rows;
                     //console.log('READ '+ util.inspect(list));

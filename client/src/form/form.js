@@ -5,15 +5,14 @@ class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            billNumber:"",
-            billDate:"",
-            billType:"",
-            billCategory1:"",
-            billCategory2:"",
-            billDescription:"",
-            billPaymentType:"",
-            billPayBy:"",
-            billFor:""
+            billnumber:"",
+            billdate:"",
+            billcategory1:1,
+            billcategory2:"",
+            billpaymenttype:"",
+            billpayby:"",
+            billfor:"",
+            billdescription:""
         };
     
         this.handleChange = this.handleChange.bind(this);
@@ -29,10 +28,12 @@ class Form extends Component {
                 billtypeList:result.billtypeList,
                 billcategory1List:result.billcategory1List,
                 billcategory2List:result.billcategory2List,
+                filteredbillcategory2List:result.billcategory2List,
                 billpaymenttypeList:result.billpaymenttypeList,
                 billpaybyList:result.billpaybyList,
                 billforList:result.billforList
               });
+              this.setFormDefaultValue();
             },
             (error) => {
               this.setState({
@@ -52,10 +53,58 @@ class Form extends Component {
         this.setState({
             [name]: value
         });
+        this.relateCategoryType(name,value);
     }
     handleSubmit(event){
         console.log(this.state);
         event.preventDefault();
+    }
+    relateCategoryType(name,selected){
+        if(name === "billcategory1"){
+            var billcategory1List=this.state.billcategory1List;
+            var billcategory2List=this.state.billcategory2List;
+            var currentCategory=billcategory1List.filter((item)=>{
+                return item.id===selected;
+            })[0];
+            var filteredbillcategory2List=billcategory2List.filter((item)=>{
+                return item.parentcategorytype===currentCategory.categorytype;
+            });
+            this.setState({
+                filteredbillcategory2List:filteredbillcategory2List
+            });
+        }
+    }
+    setFormDefaultValue(){
+        const day=this.getCurrentDate();
+        this.relateCategoryType("billcategory1",2);
+        this.setState({
+            billlogid:this.getUUID(),
+            billdate:day,
+            billcategory1:2,
+            billcategory2:1,
+            billpaymenttype:3,
+            billpayby:1,
+            billfor:1
+          });
+    }
+    getUUID(){
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c === 'x' ? r : ((r&0x3)|0x8);
+            return v.toString(16);
+        }).replace(/-/g,'');
+    }
+    getCurrentDate(){
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = today.getMonth()+1;
+        var dd = today.getDate();
+        if(dd<10){
+            dd='0'+dd;
+        }
+        if(mm<10){
+            mm='0'+mm;
+        }
+        return yyyy+"-"+mm+"-"+dd;
     }
     render() {
         const { error, isLoaded } = this.state;
@@ -68,67 +117,59 @@ class Form extends Component {
                 <div className="form">
                     <form onSubmit={this.handleSubmit}>
                         <div className="form-field">
-                            <label htmlFor="">Number:</label>
-                            <input name="billNumber" type={'number'} value={this.state.billNumber} onChange={this.handleChange} />
+                            <label htmlFor="">数额:</label>
+                            <input name="billnumber" type={'number'} value={this.state.billnumber} onChange={this.handleChange} />
                         </div>
                         <div className="form-field">
-                            <label htmlFor="">Date:</label>
-                            <input name="billDate" type={'date'} value={this.state.billDate} onChange={this.handleChange} />
+                            <label htmlFor="">日期:</label>
+                            <input name="billdate" type={'date'} value={this.state.billdate} onChange={this.handleChange} />
                         </div>
                         <div className="form-field">
-                            <label>Type:</label>
-                            <select name="billType" value={this.state.billType}>
-                            {this.state.billtypeList.map(option => {
-                                return <option value={option.id} key={option.id}>{option.name}</option>
-                            })}
-                            </select>
-                        </div>
-                        <div className="form-field">
-                            <label>Category1:</label>
-                            <select name="billCategory1" value={this.state.billCategory1} onChange={this.handleChange}>
+                            <label>大类:</label>
+                            <select name="billcategory1" value={this.state.billcategory1} onChange={this.handleChange}>
                             {this.state.billcategory1List.map(option => {
-                                return <option value={option.id} key={option.id}>{option.name}</option>
+                                return <option value={option.id} key={option.id} catetype={option.categorytype}>{option.name}</option>
                             })}
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>Category2:</label>
-                            <select name="billCategory2" value={this.state.billCategory2} onChange={this.handleChange}>
-                            {this.state.billcategory2List.map(option => {
-                                return <option value={option.id} key={option.id}>{option.name}</option>
+                            <label>小类:</label>
+                            <select name="billcategory2" value={this.state.billcategory2} onChange={this.handleChange}>
+                            {this.state.filteredbillcategory2List.map(option => {
+                                return <option value={option.id} key={option.id} catetype={option.parentcategorytype}>{option.name}</option>
                             })}
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>Description:</label>
-                            <textarea name="billDescription" value={this.state.billDescription} onChange={this.handleChange} />
+                            <label>描述:</label>
+                            <textarea name="billdescription" value={this.state.billdescription} onChange={this.handleChange} />
                         </div>
                         <div className="form-field">
-                            <label>PaymentType:</label>
-                            <select name="billPaymentType" value={this.state.billPaymentType} onChange={this.handleChange}>
+                            <label>付款方式:</label>
+                            <select name="billpaymenttype" value={this.state.billpaymenttype} onChange={this.handleChange}>
                             {this.state.billpaymenttypeList.map(option => {
                                 return <option value={option.id} key={option.id}>{option.name}</option>
                             })}
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>By:</label>
-                            <select name="billPayBy" value={this.state.billPayBy} onChange={this.handleChange}>
+                            <label>付款人:</label>
+                            <select name="billpayby" value={this.state.billpayby} onChange={this.handleChange}>
                             {this.state.billpaybyList.map(option => {
                                 return <option value={option.id} key={option.id}>{option.name}</option>
                             })}
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>For:</label>
-                            <select name="billFor" value={this.state.billFor} onChange={this.handleChange}>
+                            <label>消费者:</label>
+                            <select name="billfor" value={this.state.billfor} onChange={this.handleChange}>
                                {this.state.billforList.map(option => {
                                     return <option value={option.id} key={option.id}>{option.name}</option>
                                 })}
                             </select>
                         </div>
                         <div className="form-field">
-                            <button class="form-submit-btn">Submit</button>
+                            <button className="form-submit-btn">提交</button>
                         </div>
                     </form>
                 </div>

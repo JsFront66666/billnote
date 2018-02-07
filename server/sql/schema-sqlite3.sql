@@ -1,28 +1,26 @@
 CREATE TABLE bill(
-    billLogId INTEGER PRIMARY KEY NOT NULL,
-    billNumber REAL NOT NULL,
-    billDate INTEGER NOT NULL,
-    billType TEXT,
-    billCategory1 TEXT,
-    billCategory2 TEXT,
-    billPaymentType TEXT,
-    billBy TEXT,
-    billFor TEXT,
-    billDescription TEXT
-);
-CREATE TABLE billtype (
-	id INTEGER PRIMARY KEY NOT NULL,
-	name TEXT NOT NULL
+    billlogid TEXT PRIMARY KEY NOT NULL,
+    billnumber REAL NOT NULL,
+    billdate INTEGER NOT NULL,
+    billcategory1 TEXT,
+    billcategory2 TEXT,
+    billpaymenttype TEXT,
+    billby TEXT,
+    billfor TEXT,
+    billdescription TEXT
 );
 CREATE TABLE billcategory1 (
 	id INTEGER PRIMARY KEY NOT NULL,
+	parentcategorytype TEXT DEFAULT NULL,
 	categorytype TEXT NOT NULL, 
 	name TEXT NOT NULL
 );
 CREATE TABLE billcategory2 (
 	id INTEGER PRIMARY KEY NOT NULL,
 	parentcategorytype TEXT NOT NULL,
-	name TEXT NOT NULL
+	categorytype TEXT DEFAULT NULL,
+	name TEXT NOT NULL,
+	FOREIGN KEY (parentcategorytype) REFERENCES billcategory1 (categorytype) ON UPDATE CASCADE
 );
 CREATE TABLE billpaymenttype (
 	id INTEGER PRIMARY KEY NOT NULL,
@@ -36,16 +34,12 @@ CREATE TABLE billfor (
 	id INTEGER PRIMARY KEY NOT NULL,
 	name TEXT NOT NULL
 );
-INSERT INTO billtype (name)
-VALUES
- ("消费"),
- ("收入");
 INSERT INTO billpaymenttype (name)
 VALUES
- ("现金"),
- ("信用卡"),
- ("花呗"),
- ("其他");
+	("现金"),
+	("信用卡"),
+	("花呗"),
+	("其他");
 INSERT INTO billpayby (name)
 VALUES
 	("老婆"),
@@ -89,6 +83,9 @@ VALUES
 	("d","出租车"),
 	("d","飞机"),
 	("d","租车"),
+	("d","汽车"),
+	("d","旅馆"),
+	("d","门票"),
 	("e","通讯"),
 	("e","床品"),
 	("e","洗护"),
@@ -106,4 +103,7 @@ VALUES
 	("g","体检"),
 	("h","红包"),
 	("h","礼物"),
-	("h","请吃饭");
+	("h","请吃饭"),
+	("i","交通险"),
+	("i","财产险"),
+	("i","医疗险");

@@ -8,16 +8,24 @@ app.set("port", process.env.PORT || 3001);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("./client/build"));
 }
-
+// Read selection list
 app.get("/form/config", (req, res) => {
-    const db_tables=['billtype','billcategory1','billcategory2','billpaymenttype','billpayby','billfor'];
+    const config_tables=[{
+        "key":"name",
+        "tables":['billpaymenttype','billpayby','billfor']
+    },{
+        "key":"relation",
+        "tables":['billcategory1','billcategory2']
+    }];
     var dbPromises=[];
-    db_tables.forEach((db_table)=>{
-        dbPromises.push(db.readConfig(db_table));
+    config_tables.forEach((table_type)=>{
+        table_type.tables.forEach((table)=>{
+            dbPromises.push(db.readConfig(table,table_type.key));
+        })
     });
     Promise.all(dbPromises).then((values)=>{
         res.send(Object.assign(...values));
-        db.close();
+        //db.close();
     });
 });
 
