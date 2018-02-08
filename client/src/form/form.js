@@ -7,7 +7,7 @@ class Form extends Component {
         this.state = {
             billnumber:"",
             billdate:"",
-            billcategory1:1,
+            billcategory1:"",
             billcategory2:"",
             billpaymenttype:"",
             billpayby:"",
@@ -56,7 +56,32 @@ class Form extends Component {
         this.relateCategoryType(name,value);
     }
     handleSubmit(event){
-        console.log(this.state);
+        var formData={
+            billlogid:this.state.billlogid,
+            billnumber:this.state.billnumber,
+            billdate:this.state.billdate,
+            billcategory1:this.state.billcategory1,
+            billcategory2:this.state.billcategory2,
+            billpaymenttype:this.state.billpaymenttype,
+            billpayby:this.state.billpayby,
+            billfor:this.state.billfor,
+            billdescription:this.state.billdescription
+        };
+        fetch("/form/createRecord",{
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        }).then(res => res.json())
+          .then(
+            (result) => {
+              
+            },
+            (error) => {
+
+            }
+          )
         event.preventDefault();
     }
     relateCategoryType(name,selected){

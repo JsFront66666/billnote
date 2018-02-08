@@ -19,11 +19,11 @@ exports.connectDB = function() {
             });
     });
 };
-exports.create = function(note) {
+exports.createRecord = function(note) {
     return exports.connectDB().then(() => {
         return new Promise((resolve, reject) => {
             db.run("INSERT INTO bill VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? );",
-                note, err => {
+            Object.values(note), err => {
                     if (err) {reject(err);}
                     else {
                         console.log('CREATE '+ util.inspect(note));
@@ -33,14 +33,14 @@ exports.create = function(note) {
         });
     });
 };
-exports.update = function(note) {
+exports.updateRecord = function(note) {
     return exports.connectDB().then(() => {
         const note = new Note(key, title, body);
         return new Promise((resolve, reject) => {
             db.run("UPDATE bill "+
-                "SET  title = ?, body = ? "+
-                "WHERE billLogId = ?",
-                note, err => {
+                "SET  billnumber = ?, billdate = ? , billcategory1 = ? , billcategory2 = ? , billpaymenttype = ? , billpayby = ? , billfor = ? , billdescription = ? "+
+                "WHERE billlogid = ?",
+                Object.values(note), err => {
                     if (err) {reject(err);}
                     else {
                         console.log('UPDATE '+ util.inspect(note));
@@ -50,10 +50,10 @@ exports.update = function(note) {
         });
     });
 };
-exports.read = function(key) {
+exports.readRecord = function(key) {
     return exports.connectDB().then(() => {
         return new Promise((resolve, reject) => {
-            db.get("SELECT * FROM notes WHERE notekey = ?",
+            db.get("SELECT * FROM notes WHERE billlogid = ?",
                 [ key ], (err, row) => {
                 if (err){ reject(err);}
                 else {
@@ -84,10 +84,10 @@ exports.readConfig = function(table,key) {
         });
     });
 };
-exports.destroy = function(key) {
+exports.destroyRecord = function(key) {
     return exports.connectDB().then(() => {
         return new Promise((resolve, reject) => {
-            db.run("DELETE FROM bill WHERE notekey = ?;",
+            db.run("DELETE FROM bill WHERE billlogid = ?;",
                 [ key ], err => {
                 if (err) {reject(err);}
                 else {
@@ -102,10 +102,10 @@ exports.keylist = function() {
     return exports.connectDB().then(() => {
         return new Promise((resolve, reject) => {
             var keyz = [];
-            db.each("SELECT notekey FROM bill",
+            db.each("SELECT billlogid FROM bill",
                 (err, row) => {
                     if (err) {reject(err);}
-                    else keyz.push(row.notekey);
+                    else keyz.push(row.billlogid);
                 },
                 (err, num) => {
                     if (err) {reject(err);}
@@ -117,7 +117,7 @@ exports.keylist = function() {
 exports.count = function() {
     return exports.connectDB().then(() => {
         return new Promise((resolve, reject) => {
-            db.get("select count(notekey) as count from bill",
+            db.get("select count(billlogid) as count from bill",
                 (err, row) => {
                     if (err) {return reject(err);}
                     resolve(row.count);
