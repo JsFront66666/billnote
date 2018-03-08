@@ -56,17 +56,8 @@ class Form extends Component {
         this.relateCategoryType(name,value);
     }
     handleSubmit(event){
-        var formData={
-            billlogid:this.state.billlogid,
-            billnumber:this.state.billnumber,
-            billdate:this.state.billdate,
-            billcategory1:this.state.billcategory1,
-            billcategory2:this.state.billcategory2,
-            billpaymenttype:this.state.billpaymenttype,
-            billpayby:this.state.billpayby,
-            billfor:this.state.billfor,
-            billdescription:this.state.billdescription
-        };
+        let {billlogid,billnumber,billdate,billcategory1,billcategory2,billpaymenttype,billpayby,billfor,billdescription}=this.state;
+        var formData={billlogid,billnumber,billdate,billcategory1,billcategory2,billpaymenttype,billpayby,billfor,billdescription};
         fetch("/form/createRecord",{
             method: 'POST',
             body: JSON.stringify(formData),
